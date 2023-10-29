@@ -84,6 +84,7 @@ type Content struct {
 	Content []ContentBlock `json:"content,omitempty"`
 }
 type Description struct {
+	Version int       `json:"version,omitempty"`
 	Type    string    `json:"type,omitempty"`
 	Content []Content `json:"content,omitempty"`
 }
@@ -106,7 +107,7 @@ type CreatedIssueResponse struct {
 // NewJIRATicket creates a new JIRA ticket using the JIRA REST API v3.
 // The function returns the key of the created ticket and an error if the ticket could not be created.
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post
-func (jc JiraClient) NewJIRATicket(summary string) (string, error) {
+func (jc JiraClient) NewJIRATicket(summary string, desc string) (string, error) {
 
 	// Build the body of the request using a CreateIssueRequest
 	reqBody := CreateIssueRequest{}
@@ -119,6 +120,7 @@ func (jc JiraClient) NewJIRATicket(summary string) (string, error) {
 	}
 
 	reqBody.Fields.Summary = summary
+	reqBody.Fields.Description = setDescription(desc)
 
 	jsonBody, err := json.MarshalIndent(reqBody, "", "  ")
 	if err != nil {
@@ -160,4 +162,23 @@ func (jc JiraClient) NewJIRATicket(summary string) (string, error) {
 	}
 
 	return createResponse.Key, nil
+}
+
+func setDescription(msg string) *Description {
+	desc := Description{
+		Type:    "doc",
+		Version: 1,
+		Content: []Content{
+			{
+				Type: "paragraph",
+				Content: []ContentBlock{
+					{
+						Type: "text",
+						Text: msg,
+					},
+				},
+			},
+		},
+	}
+	return &desc
 }

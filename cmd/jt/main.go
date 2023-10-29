@@ -1,12 +1,17 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	"strings"
 
 	"github.com/leosunmo/jt"
+)
+
+var (
+	msg = flag.String("m", "", "Issue Description")
 )
 
 func main() {
@@ -17,8 +22,17 @@ func main() {
 }
 
 func run() error {
+	// Parse flags
+	flag.Parse()
+
+	var desc string
+	// Check if msg is set
+	if *msg != "" {
+		desc = *msg
+	}
+
 	// Read the issue summary from the command line arguments.
-	summary := strings.Join(os.Args[1:], " ")
+	summary := strings.Join(flag.Args(), " ")
 	if summary == "" {
 		return fmt.Errorf("please provide a summary for the issue")
 	}
@@ -49,7 +63,7 @@ func run() error {
 	}
 
 	c := jt.NewJiraClient(jc)
-	key, err := c.NewJIRATicket(summary)
+	key, err := c.NewJIRATicket(summary, desc)
 	if err != nil {
 		return fmt.Errorf("failed to create ticket: %s\n", err)
 	}
