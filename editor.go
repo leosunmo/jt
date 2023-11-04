@@ -10,7 +10,7 @@ import (
 const (
 	DefaultEditor = "vim"
 
-	boilerPlate = `
+	boilerPlate = `%s%s
 # Please enter the issue summary on the first line.
 # Separate the summary from the description with an empty line.
 # Lines starting with '#' will be ignored.
@@ -19,25 +19,28 @@ const (
 )
 
 var (
-	ErrNotModified = fmt.Errorf("file not modified")
+	ErrEmptySummary = fmt.Errorf("aborting, summary empty")
 )
 
 // OpenInEditor opens the user's default editor and returns the contents of the
 // file.
-func OpenInEditor() (string, string, error) {
-	// create a temporary file
+func OpenInEditor(s string, d string) (string, string, error) {
+	// Create a temporary file
 	tmpfile, err := os.CreateTemp("", "*-ISSUE_MSG.jt")
 	if err != nil {
 		return "", "", fmt.Errorf("failed to create temporary file: %s", err)
 	}
 	defer os.Remove(tmpfile.Name())
 
-	// write the template to the file
-	_, err = tmpfile.WriteString(boilerPlate)
+	// Write the template to the file
+	if d != "" {
+		d = "\n\n" + d
+	}
+	_, err = tmpfile.WriteString(fmt.Sprintf(boilerPlate, s, d))
 	if err != nil {
 		return "", "", fmt.Errorf("failed to write boilerplate to file: %s", err)
 	}
-	// open the file in EDITOR
+	// Open the file in EDITOR
 	e := os.Getenv("EDITOR")
 	if e == "" {
 		e = DefaultEditor
@@ -51,18 +54,13 @@ func OpenInEditor() (string, string, error) {
 		return "", "", err
 	}
 
-	// read the resulting file
+	// Read the resulting file
 	result, err := os.ReadFile(tmpfile.Name())
 	if err != nil {
 		return "", "", err
 	}
 
-	// Check if the file has been modified
-	if string(result) == boilerPlate {
-		return "", "", ErrNotModified
-	}
-
-	// split the file into summary and description
+	// Parse the file into summary and description
 	lines := strings.Split(string(result), "\n")
 	var summary, description string
 	for _, line := range lines {
@@ -79,5 +77,11 @@ func OpenInEditor() (string, string, error) {
 		// Assign the rest to description
 		description += line + "\n"
 	}
+
+	// Check if we have a summary
+	if summary == "" {
+		return "", "", ErrEmptySummary
+	}
+
 	return summary, description, nil
 }

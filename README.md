@@ -14,9 +14,23 @@ defaultComponentNames:
   - Development
 ```
 
-Then run the command:
+Then you can create a ticket with:
 ```bash
+# Create ticket with only a summary
 jt My new ticket
+
+# Create ticket with a summary and a description
+jt My new ticket -m "With a description!"
+
+# Or create a ticket with $EDITOR
+jt
+```
+
+### gitcommit-style vim highlighting
+Add this to your `.vimrc` to get gitcommit-style highlighting for the summary and description:
+```vim
+" jt syntax highlighting
+au BufReadPost *.jt set syntax=gitcommit
 ```
 
 ### Setting up JIRA API access

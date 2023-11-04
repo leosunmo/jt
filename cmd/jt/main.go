@@ -1,17 +1,19 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
 	"strings"
 
 	"github.com/leosunmo/jt"
+	"github.com/spf13/pflag"
 )
 
 var (
-	msg = flag.String("m", "", "Issue Description, optional")
+	msg  = pflag.StringP("msg", "m", "", "issue description, optional")
+	edit = pflag.BoolP("edit", "e", false, "open the issue in your default editor, optional")
 )
 
 func main() {
@@ -22,8 +24,24 @@ func main() {
 }
 
 func run() error {
+	fl := pflag.NewFlagSet("jt", pflag.ContinueOnError)
+
+	fl.Usage = func() {
+		fmt.Println("Usage: jt [flags] [summary]")
+		fmt.Println("\nIf summary is not provided, jt will open your default editor and prompt you for a summary and description.")
+		fmt.Println("\nFlags:")
+		pflag.PrintDefaults()
+	}
+
 	// Parse flags
-	flag.Parse()
+	err := fl.Parse(os.Args[1:])
+	if err != nil {
+		if !errors.Is(err, pflag.ErrHelp) {
+			fl.Usage()
+			fmt.Printf("\n%s\n", err)
+		}
+		return nil
+	}
 
 	var desc string
 	// Check if msg is set
@@ -32,9 +50,14 @@ func run() error {
 	}
 
 	// Read the issue summary from the command line arguments.
-	summary := strings.Join(flag.Args(), " ")
-	if summary == "" {
-		return fmt.Errorf("please provide a summary for the issue")
+	summary := strings.Join(pflag.Args(), " ")
+
+	if summary == "" || *edit {
+		var err error
+		summary, desc, err = jt.OpenInEditor(summary, desc)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Get the token from the keyring.
