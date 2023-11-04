@@ -25,7 +25,7 @@ func main() {
 
 func run() error {
 	fl := pflag.NewFlagSet("jt", pflag.ContinueOnError)
-
+	fl.AddFlagSet(pflag.CommandLine)
 	fl.Usage = func() {
 		fmt.Println("Usage: jt [flags] [summary]")
 		fmt.Println("\nIf summary is not provided, jt will open your default editor and prompt you for a summary and description.")
@@ -50,7 +50,7 @@ func run() error {
 	}
 
 	// Read the issue summary from the command line arguments.
-	summary := strings.Join(pflag.Args(), " ")
+	summary := strings.Join(fl.Args(), " ")
 
 	if summary == "" || *edit {
 		var err error
