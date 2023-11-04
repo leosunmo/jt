@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	msg = flag.String("m", "", "Issue Description")
+	msg = flag.String("m", "", "Issue Description, optional")
 )
 
 func main() {

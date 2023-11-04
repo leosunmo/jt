@@ -120,8 +120,9 @@ func (jc JiraClient) NewJIRATicket(summary string, desc string) (string, error) 
 	}
 
 	reqBody.Fields.Summary = summary
-	reqBody.Fields.Description = setDescription(desc)
-
+	if desc != "" {
+		reqBody.Fields.Description = setDescription(desc)
+	}
 	jsonBody, err := json.MarshalIndent(reqBody, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal body, %w", err)
