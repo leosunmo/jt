@@ -1,6 +1,6 @@
 # jt
 
-Tiny command-line tool for creating JIRA tickets with just a Summary/Title, no description (yet).
+Tiny command-line tool for creating JIRA tickets with a Summary/Title and optionally a description.
 
 ## Usage
 Create a config file under `~/.config/jt/config.yaml` with some default values. Here's an example with all supported values:
@@ -24,6 +24,10 @@ jt My new ticket -m "With a description!"
 
 # Or create a ticket with $EDITOR
 jt
+# The first lin is the ticket summary/title
+#
+# The description is everything after a blank line
+# which can be multiline.
 ```
 
 ### gitcommit-style vim highlighting
