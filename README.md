@@ -2,6 +2,13 @@
 
 Tiny command-line tool for creating JIRA tickets with a summary/title and optionally a description.
 
+## Installation
+If you have go install locally, compile and install with:
+```bash
+go install github.com/leosunmo/jt/cmd/jt
+```
+Otherwise download a release from the [releases page](https://github.com/leosunmo/jt/releases) and put it in your path.
+
 ## Usage
 Create a config file under `~/.config/jt/config.yaml` with some default values. Here's an example with all supported values:
 ```yaml
