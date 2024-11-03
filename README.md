@@ -1,6 +1,6 @@
 # jt
 
-Tiny command-line tool for creating JIRA issues with a summary/title and optionally a description.
+Tiny command-line tool for creating JIRA issues with a summary, description and optionally a parent.
 
 ## Installation
 If you have go install locally, compile and install with:
