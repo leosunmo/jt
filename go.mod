@@ -1,6 +1,6 @@
 module github.com/leosunmo/jt
 
-go 1.21.0
+go 1.23.2
 
 require (
 	github.com/99designs/keyring v1.2.2

@@ -25,6 +25,8 @@ type JTConfig struct {
 	DefaultIssueType string `yaml:"defaultIssueType"`
 	// Default component names are the default components that will be added to issues.
 	DefaultComponentNames []string `yaml:"defaultComponentNames"`
+	// Default parent issue types are the issue types that will be searched for when querying for parent issues.
+	DefaultParentIssueTypes []string `yaml:"defaultParentIssueTypes"`
 }
 
 // ReadConfig reads config file from the default location.
