@@ -92,4 +92,8 @@ source <(jt --completion)
 > **Note:** Currently only `zsh` is supported. If you want to add support for another shell, feel free to open a PR.
 
 ### TODO
-- [ ] Add support for creating sub-Tasks with Tasks as parents. Currently we don't know what type the issue passed to `-p` is.
+- [ ] Allow for creation of multiple issue types. Use strings since each JIRA instance can have different issue types.
+- [ ] Check issue type when creating with a parent as it has to follow the issue hierarchy.
+- [ ] Pass the parent issue type to the creation func, or dynamically query for the issue type.
+- [ ] Investigate if there's a way to get the issue type hierarchy from the JIRA API.
+- [ ] Add support for more shells.
